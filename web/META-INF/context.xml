@@ -7,6 +7,6 @@
               maxActive="100" maxldle="30" maxWait ="10000"
               logAbandoned="true" removeAbandoned="true"
               removeAbandonedTimeout="60" type="javax.sql.DataSource" />
-
+    <CookieProcessor sameSiteCookies="strict"/>
 </Context>
 

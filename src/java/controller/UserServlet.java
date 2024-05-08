@@ -66,12 +66,26 @@ public class UserServlet extends HttpServlet {
       throws ServletException, IOException {
     HttpSession session = request.getSession();
     Customer customer = (Customer) session.getAttribute("customer");
-    int addedBalance = Integer.parseInt(request.getParameter("balance"));
-    customer.setBalance(customer.getBalance() + addedBalance);
+    
+    // Check if customer object is null
+    if (customer == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return;
+    }
+    
+    try {
+        int addedBalance = Integer.parseInt(request.getParameter("balance"));
+        customer.setBalance(customer.getBalance() + addedBalance);
 
-    CustomerDB.update(customer);
+        CustomerDB.update(customer);
 
-    response.sendRedirect(request.getContextPath() + "/");
+        response.sendRedirect(request.getContextPath() + "/");
+    } catch (Exception e) {
+        // Handle the exception gracefully
+        // Log the error for your reference
+        e.printStackTrace();
+        response.sendRedirect(request.getContextPath() + "/error.jsp");
+    }
   }
 
   protected void changePassword(HttpServletRequest request, HttpServletResponse response)
@@ -82,26 +96,32 @@ public class UserServlet extends HttpServlet {
     String newPassword = request.getParameter("newPassword");
     String confirmNewPass = request.getParameter("confirmNewPass");
 
-    if (!currentPassword.equals(customer.getPassword())) {
-      session.setAttribute("state", "inCorrectCurrentPassword");
-      response.sendRedirect(request.getHeader("Referer"));
+    try {
+        if (!currentPassword.equals(customer.getPassword())) {
+          session.setAttribute("state", "inCorrectCurrentPassword");
+          response.sendRedirect(request.getHeader("Referer"));
 
-      return;
-    } else if (!newPassword.equals(confirmNewPass)) {
-      session.setAttribute("state", "inCorrectConfirmPassword");
-      response.sendRedirect(request.getHeader("Referer"));
+          return;
+        } else if (!newPassword.equals(confirmNewPass)) {
+          session.setAttribute("state", "inCorrectConfirmPassword");
+          response.sendRedirect(request.getHeader("Referer"));
 
-      return;
-    } else if (newPassword.equals(currentPassword)) {
-      session.setAttribute("state", "samePassword");
-      response.sendRedirect(request.getHeader("Referer"));
+          return;
+        } else if (newPassword.equals(currentPassword)) {
+          session.setAttribute("state", "samePassword");
+          response.sendRedirect(request.getHeader("Referer"));
 
-      return;
-    } else {
-      customer.setPassword(newPassword);
-      session.setAttribute("state", "successChangedPassword");
-      CustomerDB.update(customer);
-      response.sendRedirect(request.getHeader("Referer"));
+          return;
+        } else {
+          customer.setPassword(newPassword);
+          session.setAttribute("state", "successChangedPassword");
+          CustomerDB.update(customer);
+          response.sendRedirect(request.getHeader("Referer"));
+        }
+    } catch (Exception e) {
+        // Log the exception for internal use and debugging
+        session.setAttribute("state", "error");
+        response.sendRedirect(request.getHeader("Referer"));
     }
   }
 
