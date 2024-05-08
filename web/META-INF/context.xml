@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/Cinema">
+    <Resource name="cinemaDB" auth="Container"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://dpg-cohnb9ljm4es739bqi20-a.singapore-postgres.render.com/db_cinema_afxs"
+              username="admin" password="SdHwgrWQ6HG8OLC0iivcdvAL3N0LHsda"
+              maxActive="100" maxldle="30" maxWait ="10000"
+              logAbandoned="true" removeAbandoned="true"
+              removeAbandonedTimeout="60" type="javax.sql.DataSource" />
+
+</Context>
+

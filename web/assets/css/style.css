@@ -1,0 +1,11 @@
+.aside-tab--active {
+    background-color: rgb(55, 65, 81);
+}
+
+.aside-tab--active svg {
+    fill: white;
+}
+
+.aside-tab--active span {
+    color: white;
+}
