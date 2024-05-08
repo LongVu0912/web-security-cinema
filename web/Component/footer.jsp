@@ -3,7 +3,7 @@
     <%
        String root=request.getContextPath();
        %>
-      <link rel="stylesheet" href="<%=root%>/assets/css/all.min.css">
+      <link nonce="2726c7f26c" rel="stylesheet" href="<%=root%>/assets/css/all.min.css">
 
       <footer class="bottom-0 w-full bg-gray-100 pt-8 pb-6">
         <div class="container mx-auto px-4">

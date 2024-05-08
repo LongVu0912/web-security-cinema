@@ -14,11 +14,17 @@
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
+        <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16" nonce="2726c7f26c">
         <title>Home</title>
-        <script src="<%=root%>/tailwind/tailwind.js"></script>
-        <link href="<%=root%>/assets/css/aos.css" rel="stylesheet">
+        <script src="<%=root%>/tailwind/tailwind.js" nonce="2726c7f26c"></script>
+        <link href="<%=root%>/assets/css/aos.css" rel="stylesheet" nonce="2726c7f26c">
       </head>
+      
+      <style nonce="2726c7f26c">
+            .justBGImage{
+                background-image: url('<%=root%>/assets/images/main.webp')
+            }
+        </style>
 
       <!-- component header -->
       <jsp:include page="./Component/header.jsp">
@@ -88,8 +94,7 @@
       </div>
 
       <div class="mx-auto py-16 px-32" data-aos="fade-up">
-        <div class="rounded-lg text-white py-14 bg-center bg-no-repeat bg-cover"
-             style="background-image: url('<%=root%>/assets/images/main.webp')">
+        <div class="rounded-lg text-white py-14 bg-center bg-no-repeat bg-cover justBGImage">
           <div class="container mx-auto text-center text-white px-4">
             <h1 class="text-4xl md:text-6xl font-bold">Welcome to NTV Cinema</h1>
             <p class="text-xl mt-4">Experience movies like never before.</p>
@@ -122,9 +127,9 @@
       </jsp:include>
 
 
-      <script src="<%=root%>/tailwind/flowbite.min.js"></script>
-      <script src="<%=root%>/assets/js/aos.js"></script>
-      <script>
+      <script nonce="2726c7f26c" src="<%=root%>/tailwind/flowbite.min.js"></script>
+      <script nonce="2726c7f26c" src="<%=root%>/assets/js/aos.js"></script>
+      <script nonce="2726c7f26c">
         AOS.init();
       </script>
       </body>

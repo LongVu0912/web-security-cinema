@@ -20,9 +20,9 @@
               <meta charset="UTF-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <title>${movie.getTitle()}</title>
-              <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
-              <script src="<%=root%>/tailwind/tailwind.js"></script>
-              <link href="<%=root%>/assets/css/aos.css" rel="stylesheet">
+              <link nonce="2726c7f26c" rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
+              <script nonce="2726c7f26c" src="<%=root%>/tailwind/tailwind.js"></script>
+              <link nonce="2726c7f26c" href="<%=root%>/assets/css/aos.css" rel="stylesheet">
             </head>
 
             <body>
@@ -161,9 +161,9 @@
                 <jsp:param name="" value="" />
               </jsp:include>
 
-              <script src="<%=root%>/tailwind/flowbite.min.js"></script>
+              <script nonce="2726c7f26c" src="<%=root%>/tailwind/flowbite.min.js"></script>
 
-              <script>
+              <script nonce="2726c7f26c">
                 const dateInputs = [...document.querySelectorAll("[name='dayOfWeek']")];
                 const timeInputs = [...document.querySelectorAll("[name='time']")];
                 const showtime_times = document.getElementById("showtime_times");
@@ -189,8 +189,8 @@
                   });
                 });
               </script>
-              <script src="<%=root%>/assets/js/aos.js"></script>
-              <script>
+              <script nonce="2726c7f26c" src="<%=root%>/assets/js/aos.js"></script>
+              <script nonce="2726c7f26c">
                 AOS.init();
               </script>
             </body>

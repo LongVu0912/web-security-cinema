@@ -7,10 +7,10 @@
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
+        <link nonce="2726c7f26c" rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
         <title>Admin page</title>
-        <script src="<%=root%>/tailwind/tailwind.js"></script>
-        <link rel="stylesheet" href="<%=root%>/assets/css/style.css" />
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/tailwind.js"></script>
+        <link nonce="2726c7f26c" rel="stylesheet" href="<%=root%>/assets/css/style.css" />
       </head>
 
       <body>
@@ -219,8 +219,8 @@
           </div>
         </div>
 
-        <script src="<%=root%>/tailwind/flowbite.min.js"></script>
-        <script>
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/flowbite.min.js"></script>
+        <script nonce="2726c7f26c">
           // Prevent click behavior in active tab
           const activeTab = document.querySelector(".aside-tab--active");
           activeTab.addEventListener("click", (e) => {

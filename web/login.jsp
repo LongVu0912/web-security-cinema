@@ -16,10 +16,10 @@
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
+        <link nonce="2726c7f26c" rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
         <title>Login</title>
-        <script src="<%=root%>/tailwind/tailwind.js"></script>
-        <link href="<%=root%>/assets/css/aos.css" rel="stylesheet">
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/tailwind.js"></script>
+        <link nonce="2726c7f26c" href="<%=root%>/assets/css/aos.css" rel="stylesheet">
       </head>
 
       <body>
@@ -114,6 +114,21 @@
                     </svg>
                     <div>
                       <span class="font-medium">Register success, please log in to continue</span>
+                    </div>
+                  </div>
+                </c:if>
+                
+                <!--if too long char-->
+                <c:if test="${state == 'TooLong'}">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-green-50" role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                      <span class="font-medium">Please keep all input fields under 30 characters</span>
                     </div>
                   </div>
                 </c:if>
@@ -287,10 +302,10 @@
           <jsp:param name="" value="" />
         </jsp:include>
 
-        <script src="<%=root%>/tailwind/flowbite.min.js"></script>
-        <script src="<%=root%>/assets/js/aos.js"></script>
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/flowbite.min.js"></script>
+        <script nonce="2726c7f26c" src="<%=root%>/assets/js/aos.js"></script>
 
-        <script>
+        <script nonce="2726c7f26c">
           AOS.init();
         </script>
         </div>

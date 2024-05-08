@@ -14,10 +14,10 @@
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
+        <link nonce="2726c7f26c" rel="icon" href="<%=root%>/assets/images/logo.png" type="image/gif" sizes="16x16">
         <title>Ticket</title>
-        <script src="<%=root%>/tailwind/tailwind.js"></script>
-        <link href="<%=root%>/assets/css/aos.css" rel="stylesheet">
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/tailwind.js"></script>
+        <link nonce="2726c7f26c" href="<%=root%>/assets/css/aos.css" rel="stylesheet">
       </head>
 
       <body>
@@ -291,9 +291,9 @@
           <jsp:param name="" value="" />
         </jsp:include>
 
-        <script src="<%=root%>/tailwind/flowbite.min.js"></script>
+        <script nonce="2726c7f26c" src="<%=root%>/tailwind/flowbite.min.js"></script>
 
-        <script>
+        <script nonce="2726c7f26c">
           document.querySelectorAll('[data-modal-target="refund_modal"]').forEach(item => {
             item.addEventListener('click', event => {
               let refundValue = event.target.getAttribute('data-refund');
@@ -358,8 +358,8 @@
             });
           });
         </script>
-        <script src="<%=root%>/assets/js/aos.js"></script>
-        <script>
+        <script nonce="2726c7f26c" src="<%=root%>/assets/js/aos.js"></script>
+        <script nonce="2726c7f26c">
           AOS.init();
         </script>
       </body>
