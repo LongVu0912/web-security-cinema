@@ -85,7 +85,14 @@
                     </svg>
                     <span class="sr-only">Info</span>
                     <div>
-                      <span class="font-medium">Incorrect email or password, please try again.</span>
+                      <c:choose>
+                        <c:when test="${tryAgain != null}">
+                          <span class="font-medium">Wrong password. You can attempt ${tryAgain} more times.</span>
+                        </c:when>
+                        <c:otherwise>
+                          <span class="font-medium">Incorrect email or password, please try again.</span>
+                        </c:otherwise>
+                      </c:choose>
                     </div>
                   </div>
                 </c:if>

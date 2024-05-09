@@ -5,6 +5,8 @@ import data.CustomerDB;
 import data.MailUtilGmailDB;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(name = "UserLoginServlet", urlPatterns = {"/login"})
+@WebServlet(name = "UserLoginServlet", urlPatterns = { "/login" })
 public class UserLoginServlet extends HttpServlet {
+    private static final int MAX_ATTEMPTS = 5;
+    private Map<String, Integer> attemps = new HashMap<String, Integer>();
 
     protected void register(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, MessagingException {
@@ -94,6 +98,12 @@ public class UserLoginServlet extends HttpServlet {
             return;
         }
 
+        // anti brute force
+        if (attemps.containsKey(username) && attemps.get(username) >= MAX_ATTEMPTS) {
+            response.sendRedirect(request.getContextPath() + "/maxAttemp.jsp");
+            return;
+        }
+
         // set value to new customer object
         Customer customer = CustomerDB.selectCustomer(username, password);
 
@@ -105,6 +115,7 @@ public class UserLoginServlet extends HttpServlet {
             synchronized (lock) {
                 session.setAttribute("customer", customer);
             }
+            attemps.remove(username);
 
             // Create cookie for customer if remember = 'on'
             if ("on".equals(remember)) {
@@ -119,7 +130,15 @@ public class UserLoginServlet extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/");
         } else {
+            // anti brute force
             request.setAttribute("state", "fail");
+
+            // check if username is correct but password is fail
+            Customer customerWithValidUsername = CustomerDB.selectCustomerByUsername(username);
+            if (customerWithValidUsername != null) {
+                attemps.put(username, attemps.getOrDefault(username, 0) + 1);
+                request.setAttribute("tryAgain", 5 - attemps.getOrDefault(username, 0));
+            }
             request.getRequestDispatcher(url).forward(request, response);
         }
 
