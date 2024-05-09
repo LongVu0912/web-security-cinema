@@ -51,7 +51,7 @@ public class UserSeatServlet extends HttpServlet {
     String numbersString = request.getParameter("seatNumbers");
 
     // ensure user choose at least seat
-    if (numbersString.isEmpty()) {
+    if (numbersString.isEmpty() || numbersString.length() >= 3) {
       session.setAttribute("state", "empty_seat");
       response.sendRedirect(request.getHeader("Referer"));
       return;

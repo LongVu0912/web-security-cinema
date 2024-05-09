@@ -29,9 +29,6 @@ public class UserShowingServlet extends HttpServlet {
       String submittedToken = request.getParameter("csrfToken");
       String sessionToken = (String) request.getSession().getAttribute("csrfToken");
 
-      System.out.println(submittedToken);
-      System.out.println(sessionToken);
-
       if (sessionToken == null || !sessionToken.equals(submittedToken)) {
         // CSRF attack detected, reject the request
         response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF attack detected.");

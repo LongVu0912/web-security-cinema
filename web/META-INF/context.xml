@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/Cinema">
+<Context path="/">
     <Resource name="cinemaDB" auth="Container"
               driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://dpg-cohnb9ljm4es739bqi20-a.singapore-postgres.render.com/db_cinema_afxs"
