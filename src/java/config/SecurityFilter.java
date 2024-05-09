@@ -14,7 +14,6 @@ public class SecurityFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
 
         // ClickJacking Protection
-        response.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
         response.setHeader("X-Frame-Options", "SAMEORIGIN");
 
         // ContentType Protection

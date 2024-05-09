@@ -12,7 +12,7 @@ pageEncoding="UTF-8"%>
     <h1>Oops! Something went wrong.</h1>
     <p>
       You are trying to login too many times. This action raise to prevent brute
-      force attack
+      force attack ${username} - ${ipAddress}
     </p>
   </body>
 </html>

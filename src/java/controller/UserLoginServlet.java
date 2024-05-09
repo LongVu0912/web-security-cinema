@@ -86,6 +86,8 @@ public class UserLoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
+        String ipAddress = request.getRemoteAddr();
+        String attempKey = username + "-" + ipAddress;
 
         if (username.length() > 30 || password.length() > 30) {
             request.setAttribute("state", "TooLong");
@@ -99,8 +101,11 @@ public class UserLoginServlet extends HttpServlet {
         }
 
         // anti brute force
-        if (attemps.containsKey(username) && attemps.get(username) >= MAX_ATTEMPTS) {
-            response.sendRedirect(request.getContextPath() + "/maxAttemp.jsp");
+        if (attemps.containsKey(attempKey) && attemps.get(attempKey) >= MAX_ATTEMPTS) {
+            url = "/maxAttemp.jsp";
+            request.setAttribute("ipAddress", ipAddress);
+            request.setAttribute("username", username);
+            request.getRequestDispatcher(url).forward(request, response);
             return;
         }
 
@@ -115,7 +120,7 @@ public class UserLoginServlet extends HttpServlet {
             synchronized (lock) {
                 session.setAttribute("customer", customer);
             }
-            attemps.remove(username);
+            attemps.remove(attempKey);
 
             // Create cookie for customer if remember = 'on'
             if ("on".equals(remember)) {
@@ -136,8 +141,9 @@ public class UserLoginServlet extends HttpServlet {
             // check if username is correct but password is fail
             Customer customerWithValidUsername = CustomerDB.selectCustomerByUsername(username);
             if (customerWithValidUsername != null) {
-                attemps.put(username, attemps.getOrDefault(username, 0) + 1);
-                request.setAttribute("tryAgain", 5 - attemps.getOrDefault(username, 0));
+                attemps.put(attempKey, attemps.getOrDefault(attempKey, 0) + 1);
+                request.setAttribute("tryAgain", MAX_ATTEMPTS
+                        - attemps.getOrDefault(attempKey, 0) + 1);
             }
             request.getRequestDispatcher(url).forward(request, response);
         }
