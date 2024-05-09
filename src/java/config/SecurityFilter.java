@@ -5,7 +5,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 @WebFilter("/*")
 public class SecurityFilter implements Filter {
 
@@ -20,6 +19,10 @@ public class SecurityFilter implements Filter {
 
         // ContentType Protection
         response.setHeader("X-Content-Type-Options", "nosniff");
+
+        // CSP
+        response.setHeader("Content-Security-Policy",
+                "base-uri 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self'; style-src 'self' 'nonce-2726c7f26c' http://localhost:* https://fonts.googleapis.com; script-src 'nonce-2726c7f26c' http://localhost:*; default-src 'self'; frame-ancestors 'self'; form-action 'self'");
 
         chain.doFilter(req, response);
     }
