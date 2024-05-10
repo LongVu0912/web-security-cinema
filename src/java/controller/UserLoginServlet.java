@@ -1,6 +1,7 @@
 package controller;
 
 import business.Customer;
+import business.Attemp;
 import data.CustomerDB;
 import data.MailUtilGmailDB;
 
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "UserLoginServlet", urlPatterns = { "/login" })
 public class UserLoginServlet extends HttpServlet {
     private static final int MAX_ATTEMPTS = 5;
-    private Map<String, Integer> attemps = new HashMap<String, Integer>();
+    private Map<String, Attemp> attemps = new HashMap<String, Attemp>();
 
     protected void register(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, MessagingException {
@@ -87,7 +88,10 @@ public class UserLoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
         String ipAddress = request.getRemoteAddr();
+        String code = request.getParameter("code");
         String attempKey = username + "-" + ipAddress;
+
+        Attemp attemp = attemps.get(attempKey);
 
         if (username.length() > 30 || password.length() > 30) {
             request.setAttribute("state", "TooLong");
@@ -101,7 +105,7 @@ public class UserLoginServlet extends HttpServlet {
         }
 
         // anti brute force
-        if (attemps.containsKey(attempKey) && attemps.get(attempKey) >= MAX_ATTEMPTS) {
+        if (attemp != null && attemp.getAttempsTimes() >= MAX_ATTEMPTS) {
             url = "/maxAttemp.jsp";
             request.setAttribute("ipAddress", ipAddress);
             request.setAttribute("username", username);
@@ -112,7 +116,11 @@ public class UserLoginServlet extends HttpServlet {
         // set value to new customer object
         Customer customer = CustomerDB.selectCustomer(username, password);
 
-        if (null != customer) {
+        Boolean isFirstLogin = attemp == null;
+
+        if ((null != customer && isFirstLogin)
+                || (null != customer && !isFirstLogin && code.equals(attemp.getCode()))) {
+
             // if login success --> find out
             // Store customer to the session
             HttpSession session = request.getSession();
@@ -120,6 +128,7 @@ public class UserLoginServlet extends HttpServlet {
             synchronized (lock) {
                 session.setAttribute("customer", customer);
             }
+
             attemps.remove(attempKey);
 
             // Create cookie for customer if remember = 'on'
@@ -141,10 +150,35 @@ public class UserLoginServlet extends HttpServlet {
             // check if username is correct but password is fail
             Customer customerWithValidUsername = CustomerDB.selectCustomerByUsername(username);
             if (customerWithValidUsername != null) {
-                attemps.put(attempKey, attemps.getOrDefault(attempKey, 0) + 1);
-                request.setAttribute("tryAgain", MAX_ATTEMPTS
-                        - attemps.getOrDefault(attempKey, 0) + 1);
+
+                // generate UUID
+                String AuthCode = UUID.randomUUID().toString();
+                Attemp checkAttemp = isFirstLogin ? new Attemp(1, username, ipAddress, AuthCode)
+                        : new Attemp(attemp.getAttempsTimes() + 1, username, ipAddress, AuthCode);
+
+                attemps.put(attempKey, checkAttemp);
+
+                request.setAttribute("tryAgain", MAX_ATTEMPTS - attemps.get(attempKey).getAttempsTimes());
+
+                if (checkAttemp.getAttempsTimes() == 3) {
+                    request.setAttribute("sendCode", true);
+
+                    String to = customerWithValidUsername.getEmail();
+                    String subject = "Please check 2 factor authentication code for your NTV Cinema Account";
+                    String body = "Hi " + customerWithValidUsername.getFullname() + ",\n\n"
+                            + "You have requested login with 2 factor.\n\n"
+                            + "Your username is " + customerWithValidUsername.getUsername() + ".\n\n"
+                            + "Your authentication key is: " + AuthCode + "\n\n";
+                    try {
+                        MailUtilGmailDB.sendMail(to, subject, body);
+                    } catch (jakarta.mail.MessagingException ex) {
+                        Logger.getLogger(UserLoginServlet.class.getName()).log(Level.SEVERE, null,
+                                ex);
+                    }
+                }
+
             }
+
             request.getRequestDispatcher(url).forward(request, response);
         }
 
