@@ -126,7 +126,7 @@
                 </c:if>
                 
                 <!--if too long char-->
-                <c:if test="${state == 'TooLong'}">
+                <c:if test="${state == 'InvalidLength'}">
                   <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-green-50" role="alert">
                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -135,7 +135,22 @@
                     </svg>
                     <span class="sr-only">Info</span>
                     <div>
-                      <span class="font-medium">Please keep all input fields under 30 characters</span>
+                      <span class="font-medium">Full name and username should in range from 8 to 30 in length</span>
+                    </div>
+                  </div>
+                </c:if>
+
+                <!--weak pw-->
+                <c:if test="${state == 'WeakPassword'}">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-green-50" role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                      <span class="font-medium">Check password strength: min 1: a-z, min 1: A-z, min 1: 0-9, min 1: @#$%^&+=, min 8, max 30, no space</span>
                     </div>
                   </div>
                 </c:if>

@@ -38,8 +38,18 @@ public class UserLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
 
-        if (fullname.length() > 30 || username.length() > 30 || password.length() > 30) {
-            request.setAttribute("state", "TooLong");
+        // Check length
+        if (fullname.length() < 8 || fullname.length() > 30 || username.length() < 8 || username.length() > 30) {
+            request.setAttribute("state", "InvalidLength");
+            request.getRequestDispatcher(url).forward(request, response);
+            return;
+        }
+
+        // Check password strength --> min 1: a-z, min 1: A-z, min 1: 0-9, min 1: @#$%^&+=, min 8, max 30, no space
+        // special
+        String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+        if (!password.matches(passwordRegex) || password.length() < 8 || password.length() > 30) {
+            request.setAttribute("state", "WeakPassword");
             request.getRequestDispatcher(url).forward(request, response);
             return;
         }
