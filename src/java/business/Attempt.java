@@ -1,18 +1,18 @@
 package business;
 
-public class Attemp {
-    private Integer attempsTimes;
+public class Attempt {
+    private Integer attemptTimes;
     private String username;
     private String ipAddress;
-    private String code;
+    private String code = "";
 
     // get and set
-    public Integer getAttempsTimes() {
-        return attempsTimes;
+    public Integer getAttemptTimes() {
+        return attemptTimes;
     }
 
-    public void setAttempsTimes(Integer attempsTimes) {
-        this.attempsTimes = attempsTimes;
+    public void setAttemptTimes(Integer attemptTimes) {
+        this.attemptTimes = attemptTimes;
     }
 
     public String getUsername() {
@@ -39,20 +39,19 @@ public class Attemp {
         this.code = code;
     }
 
-    // constructor
-    public Attemp(Integer attempsTimes, String username, String ipAddress) {
-        this.attempsTimes = attempsTimes;
-        this.username = username;
-        this.ipAddress = ipAddress;
-        this.code = null;
-    }
-
     // full args constructor
-    public Attemp(Integer attempsTimes, String username, String ipAddress, String code) {
-        this.attempsTimes = attempsTimes;
+    public Attempt(Integer attempsTimes, String username, String ipAddress, String code) {
+        this.attemptTimes = attempsTimes;
         this.username = username;
         this.ipAddress = ipAddress;
         this.code = code;
+    }
+
+    public Attempt(Integer attempsTimes, String username, String ipAddress) {
+        this.attemptTimes = attempsTimes;
+        this.username = username;
+        this.ipAddress = ipAddress;
+        this.code = "";
     }
 
 }

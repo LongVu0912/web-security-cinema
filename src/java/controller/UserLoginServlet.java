@@ -1,7 +1,7 @@
 package controller;
 
 import business.Customer;
-import business.Attemp;
+import business.Attempt;
 import data.CustomerDB;
 import data.MailUtilGmailDB;
 
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "UserLoginServlet", urlPatterns = { "/login" })
 public class UserLoginServlet extends HttpServlet {
     private static final int MAX_ATTEMPTS = 5;
-    private Map<String, Attemp> attemps = new HashMap<String, Attemp>();
+    private Map<String, Attempt> attempts = new HashMap<String, Attempt>();
 
     protected void register(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, MessagingException {
@@ -91,7 +91,7 @@ public class UserLoginServlet extends HttpServlet {
         String code = request.getParameter("code");
         String attempKey = username + "-" + ipAddress;
 
-        Attemp attemp = attemps.get(attempKey);
+        Attempt attemp = attempts.get(attempKey);
 
         if (username.length() > 30 || password.length() > 30) {
             request.setAttribute("state", "TooLong");
@@ -105,7 +105,7 @@ public class UserLoginServlet extends HttpServlet {
         }
 
         // anti brute force
-        if (attemp != null && attemp.getAttempsTimes() >= MAX_ATTEMPTS) {
+        if (attemp != null && attemp.getAttemptTimes() >= MAX_ATTEMPTS) {
             url = "/maxAttemp.jsp";
             request.setAttribute("ipAddress", ipAddress);
             request.setAttribute("username", username);
@@ -129,7 +129,7 @@ public class UserLoginServlet extends HttpServlet {
                 session.setAttribute("customer", customer);
             }
 
-            attemps.remove(attempKey);
+            attempts.remove(attempKey);
 
             // Create cookie for customer if remember = 'on'
             if ("on".equals(remember)) {
@@ -153,14 +153,14 @@ public class UserLoginServlet extends HttpServlet {
 
                 // generate UUID
                 String AuthCode = UUID.randomUUID().toString();
-                Attemp checkAttemp = isFirstLogin ? new Attemp(1, username, ipAddress, AuthCode)
-                        : new Attemp(attemp.getAttempsTimes() + 1, username, ipAddress, AuthCode);
+                Attempt checkAttemp = isFirstLogin ? new Attempt(1, username, ipAddress, AuthCode)
+                        : new Attempt(attemp.getAttemptTimes() + 1, username, ipAddress, AuthCode);
 
-                attemps.put(attempKey, checkAttemp);
+                attempts.put(attempKey, checkAttemp);
 
-                request.setAttribute("tryAgain", MAX_ATTEMPTS - attemps.get(attempKey).getAttempsTimes());
+                request.setAttribute("tryAgain", MAX_ATTEMPTS - attempts.get(attempKey).getAttemptTimes());
 
-                if (checkAttemp.getAttempsTimes() == 3) {
+                if (checkAttemp.getAttemptTimes() == 3) {
                     request.setAttribute("sendCode", true);
 
                     String to = customerWithValidUsername.getEmail();
