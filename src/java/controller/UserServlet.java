@@ -66,25 +66,25 @@ public class UserServlet extends HttpServlet {
       throws ServletException, IOException {
     HttpSession session = request.getSession();
     Customer customer = (Customer) session.getAttribute("customer");
-    
+
     // Check if customer object is null
     if (customer == null) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
-        return;
+      response.sendRedirect(request.getContextPath() + "/login.jsp");
+      return;
     }
-    
+
     try {
-        int addedBalance = Integer.parseInt(request.getParameter("balance"));
-        customer.setBalance(customer.getBalance() + addedBalance);
+      int addedBalance = Integer.parseInt(request.getParameter("balance"));
+      customer.setBalance(customer.getBalance() + addedBalance);
 
-        CustomerDB.update(customer);
+      CustomerDB.update(customer);
 
-        response.sendRedirect(request.getContextPath() + "/");
+      response.sendRedirect(request.getContextPath() + "/");
     } catch (Exception e) {
-        // Handle the exception gracefully
-        // Log the error for your reference
-        e.printStackTrace();
-        response.sendRedirect(request.getContextPath() + "/error.jsp");
+      // Handle the exception gracefully
+      // Log the error for your reference
+      e.printStackTrace();
+      response.sendRedirect(request.getContextPath() + "/error.jsp");
     }
   }
 
@@ -97,31 +97,31 @@ public class UserServlet extends HttpServlet {
     String confirmNewPass = request.getParameter("confirmNewPass");
 
     try {
-        if (!currentPassword.equals(customer.getPassword())) {
-          session.setAttribute("state", "inCorrectCurrentPassword");
-          response.sendRedirect(request.getHeader("Referer"));
-
-          return;
-        } else if (!newPassword.equals(confirmNewPass)) {
-          session.setAttribute("state", "inCorrectConfirmPassword");
-          response.sendRedirect(request.getHeader("Referer"));
-
-          return;
-        } else if (newPassword.equals(currentPassword)) {
-          session.setAttribute("state", "samePassword");
-          response.sendRedirect(request.getHeader("Referer"));
-
-          return;
-        } else {
-          customer.setPassword(newPassword);
-          session.setAttribute("state", "successChangedPassword");
-          CustomerDB.update(customer);
-          response.sendRedirect(request.getHeader("Referer"));
-        }
-    } catch (Exception e) {
-        // Log the exception for internal use and debugging
-        session.setAttribute("state", "error");
+      if (!currentPassword.equals(customer.getPassword())) {
+        session.setAttribute("state", "inCorrectCurrentPassword");
         response.sendRedirect(request.getHeader("Referer"));
+
+        return;
+      } else if (!newPassword.equals(confirmNewPass)) {
+        session.setAttribute("state", "inCorrectConfirmPassword");
+        response.sendRedirect(request.getHeader("Referer"));
+
+        return;
+      } else if (newPassword.equals(currentPassword)) {
+        session.setAttribute("state", "samePassword");
+        response.sendRedirect(request.getHeader("Referer"));
+
+        return;
+      } else {
+        customer.setPassword(newPassword);
+        session.setAttribute("state", "successChangedPassword");
+        CustomerDB.update(customer);
+        response.sendRedirect(request.getHeader("Referer"));
+      }
+    } catch (Exception e) {
+      // Log the exception for internal use and debugging
+      session.setAttribute("state", "error");
+      response.sendRedirect(request.getHeader("Referer"));
     }
   }
 
@@ -150,6 +150,16 @@ public class UserServlet extends HttpServlet {
       throws ServletException, IOException {
 
     String action = request.getParameter("action");
+
+    // Check CSRF token
+    String submittedToken = request.getParameter("csrfToken");
+    String sessionToken = (String) request.getSession().getAttribute("csrfToken");
+
+    if (sessionToken == null || !sessionToken.equals(submittedToken)) {
+      // CSRF attack detected, reject the request
+      response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF attack detected.");
+      return;
+    }
 
     if (null != action) {
       switch (action) {

@@ -45,7 +45,8 @@ public class UserLoginServlet extends HttpServlet {
             return;
         }
 
-        // Check password strength --> min 1: a-z, min 1: A-z, min 1: 0-9, min 1: @#$%^&+=, min 8, max 30, no space
+        // Check password strength --> min 1: a-z, min 1: A-z, min 1: 0-9, min 1:
+        // @#$%^&+=, min 8, max 30, no space
         // special
         String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
         if (!password.matches(passwordRegex) || password.length() < 8 || password.length() > 30) {
@@ -94,14 +95,23 @@ public class UserLoginServlet extends HttpServlet {
         }
 
         // get value
-        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
+        String username = request.getParameter("username");
         String ipAddress = request.getRemoteAddr();
-        String code = request.getParameter("code");
+        String code = request.getParameter("code") != null ? request.getParameter("code") : "";
         String attempKey = username + "-" + ipAddress;
 
         Attempt attemp = attempts.get(attempKey);
+
+        // anti brute force
+        if (attemp != null && attemp.getAttemptTimes() >= MAX_ATTEMPTS) {
+            url = "/maxAttemp.jsp";
+            request.setAttribute("ipAddress", ipAddress);
+            request.setAttribute("username", username);
+            request.getRequestDispatcher(url).forward(request, response);
+            return;
+        }
 
         if (username.length() > 30 || password.length() > 30) {
             request.setAttribute("state", "TooLong");
@@ -111,15 +121,6 @@ public class UserLoginServlet extends HttpServlet {
 
         if ("admin".equals(username) && "admin".equals(password)) {
             response.sendRedirect(request.getContextPath() + "/admin/movies");
-            return;
-        }
-
-        // anti brute force
-        if (attemp != null && attemp.getAttemptTimes() >= MAX_ATTEMPTS) {
-            url = "/maxAttemp.jsp";
-            request.setAttribute("ipAddress", ipAddress);
-            request.setAttribute("username", username);
-            request.getRequestDispatcher(url).forward(request, response);
             return;
         }
 
@@ -133,13 +134,12 @@ public class UserLoginServlet extends HttpServlet {
 
             // if login success --> find out
             // Store customer to the session
+            attempts.remove(attempKey);
             HttpSession session = request.getSession();
             final Object lock = request.getSession().getId().intern();
             synchronized (lock) {
                 session.setAttribute("customer", customer);
             }
-
-            attempts.remove(attempKey);
 
             // Create cookie for customer if remember = 'on'
             if ("on".equals(remember)) {
@@ -163,16 +163,17 @@ public class UserLoginServlet extends HttpServlet {
 
                 // generate UUID
                 String AuthCode = UUID.randomUUID().toString();
-                Attempt checkAttemp = isFirstLogin ? new Attempt(1, username, ipAddress, AuthCode)
-                        : new Attempt(attemp.getAttemptTimes() + 1, username, ipAddress, AuthCode);
+                Attempt checkAttemp = isFirstLogin ? new Attempt(1, username, ipAddress, "")
+                        : new Attempt(attemp.getAttemptTimes() + 1, username, ipAddress, (attemp.getAttemptTimes() + 1) >= 3 ? AuthCode : "");
 
                 attempts.put(attempKey, checkAttemp);
 
                 request.setAttribute("tryAgain", MAX_ATTEMPTS - attempts.get(attempKey).getAttemptTimes());
 
-                if (checkAttemp.getAttemptTimes() == 3) {
+                if (checkAttemp.getAttemptTimes() >= 3) {
                     request.setAttribute("sendCode", true);
 
+                    // send email
                     String to = customerWithValidUsername.getEmail();
                     String subject = "Please check 2 factor authentication code for your NTV Cinema Account";
                     String body = "Hi " + customerWithValidUsername.getFullname() + ",\n\n"
@@ -182,11 +183,9 @@ public class UserLoginServlet extends HttpServlet {
                     try {
                         MailUtilGmailDB.sendMail(to, subject, body);
                     } catch (jakarta.mail.MessagingException ex) {
-                        Logger.getLogger(UserLoginServlet.class.getName()).log(Level.SEVERE, null,
-                                ex);
+                        Logger.getLogger(UserLoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-
             }
 
             request.getRequestDispatcher(url).forward(request, response);
